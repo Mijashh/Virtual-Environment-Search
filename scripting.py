@@ -1,14 +1,17 @@
 import os
 
 
-def listdirectory(dirpath):
+def listdirectory(dirpath, depth=0):
     for item in os.listdir(dirpath):
-        # print(item)
+        
         item_path=os.path.join(dirpath,item)
         
         if os.path.isdir(item_path):
-            print(item)
-            listdirectory(item_path)
+            print(" "*depth+item)
+            listdirectory(item_path,depth+5)
+
+        
+            
         
 
 directory= input("Enter directory path to search: ")
