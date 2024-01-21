@@ -14,7 +14,8 @@ def listdirectory(dirpath, depth=0):
             
         
 
-directory= input("Enter directory path to search: ")
+directo= input("Enter directory name to search: ")
+directory=os.path.join("/home/mijashadhikari",directo)
 os.chdir(directory)
 current_directory = os.getcwd()
 # # print(f'Current working directory is now: {current_directory}')
