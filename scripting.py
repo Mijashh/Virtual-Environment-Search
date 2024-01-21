@@ -83,7 +83,7 @@ def delvirtualenv(item_path):
 
 def main():
     while True:
-        root="/home/mijashadhikari"
+        root=os.path.expanduser("~")
         print("\nThe available directories are: \n")
         subprocess.run(["ls",root])
         directo= input("\nEnter directory name to search for virtual environment: ")
