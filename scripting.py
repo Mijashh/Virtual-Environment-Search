@@ -2,7 +2,6 @@ import os
 import subprocess
 
 
-
 def list_directory(root):
     print("\nThe available directories are: \n")
     subprocess.run(["ls", root])
@@ -22,37 +21,39 @@ def show_virtual(a_virtual):
         print("No virtual environments present in selected directory.")
         while True:
             ask_user = input("\nDo you want to search in another directory??  (y/N) : ")
-            if ask_user =="y" or ask_user=="Y":
+            if ask_user == "y" or ask_user == "Y":
                 main()
                 break
-            elif ask_user in {"n","N"}:
+            elif ask_user in {"n", "N"}:
                 print("\nExited Successfully!!!")
                 break
             else:
                 print("\nInvalid input. Enter again")
 
     else:
-        
-            while True:
-                try:
-                    print("The virtual environments present in the selected directory are: ")
-                    for index, environments in enumerate(a_virtual, start=1):
-                        print(f"{index}.{os.path.basename(environments)}")
-                    position = int(
-                        input("\nEnter the number of the environment that you want to manage: ")
+        while True:
+            try:
+                print(
+                    "The virtual environments present in the selected directory are: "
+                )
+                for index, environments in enumerate(a_virtual, start=1):
+                    print(f"{index}.{os.path.basename(environments)}")
+                position = int(
+                    input(
+                        "\nEnter the number of the environment that you want to manage: "
                     )
-                    if position<=len(a_virtual):
-                        manage_virtual(a_virtual[position- 1],a_virtual)
-                        break
-                        
-                    else:
-                        print("\nChoice invalid. Please select again!!!\n")
-                except ValueError:
-                    print("\nEnter a valid integer value\n")
-                
+                )
+                if position <= len(a_virtual):
+                    manage_virtual(a_virtual[position - 1], a_virtual)
+                    break
+
+                else:
+                    print("\nChoice invalid. Please select again!!!\n")
+            except ValueError:
+                print("\nEnter a valid integer value\n")
 
 
-def manage_virtual(dirpath,a_virtual):
+def manage_virtual(dirpath, a_virtual):
     print(f"\nYou are inside the virtual environment named {os.path.basename(dirpath)}")
     while True:
         qn = input("\nDo you want to checkout the modules installed? (y/N): ")
@@ -61,71 +62,76 @@ def manage_virtual(dirpath,a_virtual):
             print("\n")
             show_dependencies(dirpath)
             break
-        elif qn not in {"n","N"}: 
+        elif qn not in {"n", "N"}:
             print("Invalid input, enter again!!! ")
-        else: 
+        else:
             break
-    
-    while True:        
+
+    while True:
         ask = input("Do you want to delete the Virtual Environment?? (y/N): ")
         if ask == "y" or ask == "Y":
             del_virtualenv(dirpath)
             break
-        elif ask not in {"n","N"}:
+        elif ask not in {"n", "N"}:
             print("\nInvalid input. Enter again!!! ")
         else:
             break
     while True:
-        ask_user=input("Exit program or select another virtual environment?? (E/s): ")
+        ask_user = input("Exit program or select another virtual environment?? (E/s): ")
         if ask_user in {"s", "S"}:
             print("\n")
             show_virtual(a_virtual)
-        elif ask_user in {"e","E"}:
+        elif ask_user in {"e", "E"}:
             print("Exited Successfully!!!")
             break
         else:
             print("Invalid input. Enter again!!!\n")
-            
+
 
 def show_dependencies(item_path):
-    bash_command = item_path+"/bin/python -m pip list"
+    bash_command = item_path + "/bin/python -m pip list"
 
     subprocess.run(bash_command, shell=True)
     while True:
         qn = input(
-        "\nDo you want to add or delete dependecies? Press S to skip (Add/Del/S): "
+            "\nDo you want to add or delete dependecies? Press S to skip (Add/Del/S): "
         )
-    
+
         if qn == "del" or qn == "Del":
             delete_dependency(item_path)
             break
         elif qn == "add" or qn == "Add":
             add_dependency(item_path)
             break
-        elif qn in {"s","S"}:
+        elif qn in {"s", "S"}:
             break
-        else:    
+        else:
             print("Invalid input. Enter again!!!")
 
 
 def delete_dependency(item_path):
     package_name = input("\nEnter the name of the package to be uninstalled: ")
-    bash_command = item_path+f"/bin/python -m pip uninstall {package_name}"
+    bash_command = item_path + f"/bin/python -m pip uninstall {package_name}"
     subprocess.run(bash_command, shell=True)
     print("\nThe dependency now present in the virtual environment are: ")
     show_dependencies(item_path)
 
 
 def add_dependency(item_path):
+    bash_check=item_path + "/bin/python -m pip list"
+    result = subprocess.run(bash_check, capture_output=True, text=True, shell=True)
     package_name = input("\n Enter the name of the package to be installed: ")
-    bash_command = item_path+f"/bin/python -m pip install {package_name}"
-    subprocess.run(bash_command, shell=True) #executable=user_shell)
-    print("\nThe dependency now present in the virtual environment are: ")
+    if package_name in result.stdout:
+        print("\nPackage already installed. Enter another package!!!")
+    else:
+        bash_command = item_path + f"/bin/python -m pip install {package_name}"
+        subprocess.run(bash_command, shell=True)  
+    print("\nThe dependency currently present in the virtual environment are: ")
     show_dependencies(item_path)
 
 
 def del_virtualenv(item_path):
-    bash_command = "rm -rf "+item_path
+    bash_command = "rm -rf " + item_path
     subprocess.run(bash_command, shell=True)
     print("Environment Deleted Successfully!!! \n")
 
