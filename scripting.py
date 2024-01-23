@@ -63,7 +63,7 @@ def manage_virtual(dirpath, a_virtual, index):
             print("\n")
             show_dependencies(dirpath)
             break
-        elif qn.lower not in {"n", "no"}:
+        elif qn.lower() not in {"n", "no"}:
             print("Invalid input, enter again!!! ")
         else:
             break
@@ -78,12 +78,13 @@ def manage_virtual(dirpath, a_virtual, index):
             print("\nInvalid input. Enter again!!! ")
         else:
             break
+        
     while True:
         ask_user = input("Exit program or select another virtual environment?? (E/s): ")
         if ask_user.lower() in {"s"}:
             print("\n")
             show_virtual(a_virtual)
-        elif ask_user.lower in {"e"}:
+        elif ask_user.lower() in {"e","exit"}:
             print("Exited Successfully!!!")
             break
         else:
@@ -91,7 +92,7 @@ def manage_virtual(dirpath, a_virtual, index):
 
 
 def show_dependencies(item_path):
-    bash_command = item_path + "/bin/python -m pip list"
+    bash_command = os.path.join(item_path,"bin/python -m pip list")
 
     subprocess.run(bash_command, shell=True)
     while True:
@@ -113,20 +114,20 @@ def show_dependencies(item_path):
 
 def delete_dependency(item_path):
     package_name = input("\nEnter the name of the package to be uninstalled: ")
-    bash_command = item_path + f"/bin/python -m pip uninstall {package_name}"
+    bash_command = os.path.join(item_path , f"bin/python -m pip uninstall {package_name}")
     subprocess.run(bash_command, shell=True)
     print("\nThe dependency now present in the virtual environment are: ")
     show_dependencies(item_path)
 
 
 def add_dependency(item_path):
-    bash_check = item_path + "/bin/python -m pip list"
+    bash_check = os.path.join(item_path, "bin/python -m pip list")
     result = subprocess.run(bash_check, capture_output=True, text=True, shell=True)
     package_name = input("\n Enter the name of the package to be installed: ")
     if package_name in result.stdout:
         print("\nPackage already installed. Enter another package!!!")
     else:
-        bash_command = item_path + f"/bin/python -m pip install {package_name}"
+        bash_command = os.path.join(item_path,f"bin/python -m pip install {package_name}")
         subprocess.run(bash_command, shell=True)
     print("\nThe dependency currently present in the virtual environment are: ")
     show_dependencies(item_path)
