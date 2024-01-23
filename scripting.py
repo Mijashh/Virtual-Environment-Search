@@ -44,7 +44,8 @@ def show_virtual(a_virtual):
                     )
                 )
                 if position <= len(a_virtual):
-                    manage_virtual(a_virtual[position - 1], a_virtual)
+                    index=position-1
+                    manage_virtual(a_virtual[index], a_virtual,index)
                     break
 
                 else:
@@ -53,7 +54,7 @@ def show_virtual(a_virtual):
                 print("\nEnter a valid integer value\n")
 
 
-def manage_virtual(dirpath, a_virtual):
+def manage_virtual(dirpath, a_virtual,index):
     print(f"\nYou are inside the virtual environment named {os.path.basename(dirpath)}")
     while True:
         qn = input("\nDo you want to checkout the modules installed? (y/N): ")
@@ -71,6 +72,7 @@ def manage_virtual(dirpath, a_virtual):
         ask = input("Do you want to delete the Virtual Environment?? (y/N): ")
         if ask == "y" or ask == "Y":
             del_virtualenv(dirpath)
+            del a_virtual[index]
             break
         elif ask not in {"n", "N"}:
             print("\nInvalid input. Enter again!!! ")
